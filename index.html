@@ -180,11 +180,45 @@
         </div>
     </div>
 
+    <div id="vault-modal" class="modal-overlay">
+        <div class="modal-content glass-card" style="border-color: #e2b714; box-shadow: 0 0 40px rgba(226, 183, 20, 0.25); max-width: 650px; text-align: left;">
+            <span class="close-btn" style="color: #e2b714;" onclick="triggerClick(); document.getElementById('vault-modal').style.opacity='0'; setTimeout(() => document.getElementById('vault-modal').style.display='none', 300);">&times;</span>
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <i class="fa-solid fa-book-journal-whills" style="font-size: 3rem; color: #e2b714; margin-bottom: 1rem; text-shadow: 0 0 15px rgba(226, 183, 20, 0.5);"></i>
+                <h2 style="color: #e2b714; text-shadow: 0 0 10px rgba(226, 183, 20, 0.5); margin-top: 0; text-transform: uppercase; letter-spacing: 2px;">The EFECT Vault</h2>
+                <p style="color: #aaa; font-size: 0.9rem;">Official Documentation & Optimization Intel</p>
+            </div>
+
+            <div class="vault-section">
+                <h3 style="color: #00ff00; border-bottom: 1px solid rgba(0,255,0,0.3); padding-bottom: 5px; margin-top: 0;">> EFECT PRO MACROS</h3>
+                <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6;">Engineered for absolute zero-delay automation. The EFECT Macro Engine optimizes input execution by bypassing standard Windows latency queues. Perfect for complex mechanical sequences, ensuring flawless consistency every single time.</p>
+                <img src="macro.png" alt="Macro Interface" class="modal-img" style="border-color: #00ff00; margin-top: 10px; max-height: 180px; object-fit: cover;">
+            </div>
+
+            <div class="vault-section" style="margin-top: 2rem;">
+                <h3 style="color: #fff; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; text-shadow: 0 0 5px #fff;">> EFECT FPS BOOSTER</h3>
+                <p style="color: #ccc; font-size: 0.85rem; line-height: 1.6;">The ultimate system calibrator. We forcefully suspend background telemetry, optimize RAM standby lists, and reallocate CPU priority directly to your game client. Experience unlocked frame rates and buttery smooth 1% lows in stacked end-games.</p>
+                <img src="fps.png" alt="FPS Booster Interface" class="modal-img" style="border-color: #fff; margin-top: 10px; max-height: 180px; object-fit: cover;">
+            </div>
+            
+            <div class="vault-section" style="margin-top: 2rem; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px dashed #e2b714;">
+                <h3 style="color: #e2b714; margin-top: 0; margin-bottom: 10px; font-size: 1rem;">> OPTIMIZER PROTOCOLS</h3>
+                <ul style="color: #ccc; font-size: 0.85rem; line-height: 1.6; padding-left: 20px; margin-bottom: 0;">
+                    <li style="margin-bottom: 8px;"><strong>Registry Cleansing:</strong> Strip Windows bloatware safely to lower background process counts.</li>
+                    <li style="margin-bottom: 8px;"><strong>Network Routing:</strong> Flush DNS and establish the shortest hop path to gaming servers.</li>
+                    <li><strong>Peripheral Polling:</strong> Ensure your mouse/keyboard run at native 1000Hz+ without USB bottlenecks.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div class="galaxy-wrapper">
         <div class="galaxy-bg"></div>
         <div class="galaxy-stars-1"></div>
         <div class="galaxy-stars-2"></div>
     </div>
+
 
     <div class="container">
         <header>
@@ -244,14 +278,14 @@
                 <button id="btn-synergy" class="neon-btn" style="background: rgba(0,255,0,0.1); color: #00ff00;">LAUNCH ANALYZER</button>
             </div>
 
-            <div id="hw-monitor-card" class="glass-card locked" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
+                        <div id="vault-card" class="glass-card" style="border-color: #e2b714; background: linear-gradient(145deg, rgba(226,183,20,0.08) 0%, rgba(0,0,0,0.4) 100%);" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                 <div class="card-header">
-                    <div class="icon-wrapper"><i class="fa-solid fa-server"></i></div>
-                    <span class="status dev" id="hw-status-badge"><span class="dot"></span> LOCKED</span>
+                    <div class="icon-wrapper" style="color: #e2b714; text-shadow: 0 0 10px #e2b714;"><i class="fa-solid fa-vault"></i></div>
+                    <span class="status online" style="color: #e2b714; border-color: #e2b714; background: rgba(226, 183, 20, 0.1);"><span class="dot" style="background:#e2b714; box-shadow: 0 0 5px #e2b714;"></span> INTEL</span>
                 </div>
-                <h2>Efect Hardware Monitor</h2>
-                <p>Real-time telemetry and core-locking utility for ultimate system stability.</p>
-                <button id="btn-hw-monitor" class="neon-btn disabled" disabled>SYSTEM LOCKED</button>
+                <h2 style="color: #e2b714; text-shadow: 0 0 10px rgba(226, 183, 20, 0.5);">The EFECT Vault</h2>
+                <p style="color: #ccc;">Exclusive documentation, optimization protocols, and comprehensive guides for our Macro and FPS Suite.</p>
+                <button onclick="document.getElementById('vault-modal').style.display='flex'; setTimeout(() => document.getElementById('vault-modal').style.opacity='1', 10); triggerClick();" class="neon-btn" style="color: #e2b714; border-color: #e2b714; box-shadow: 0 0 15px rgba(226, 183, 20, 0.2);">Unlock Vault</button>
             </div>
         </div>
     </div>

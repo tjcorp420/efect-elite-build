@@ -730,3 +730,14 @@ canvas#matrix-canvas {
     text-shadow: 0 0 8px #00ff00;
     transition: transform 0.3s ease;
 }
+/* --- VAULT SPECIFIC STYLES --- */
+#vault-card .neon-btn:hover {
+    background: #e2b714 !important;
+    color: #000 !important;
+    box-shadow: 0 5px 25px rgba(226, 183, 20, 0.6) !important;
+}
+
+.vault-section h3 {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
