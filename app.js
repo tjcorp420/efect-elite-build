@@ -28,6 +28,36 @@ function triggerBoot() {
     if (navigator.vibrate) navigator.vibrate([40, 50, 40]); 
 }
 
+// --- TOAST NOTIFICATION ENGINE ---
+function showToast(title, msg) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = 'efect-toast';
+    toast.innerHTML = `<h4><i class="fa-solid fa-bell" style="margin-right:8px;"></i>${title}</h4><p>${msg}</p>`;
+    
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideOutToast 0.5s ease forwards';
+        setTimeout(() => toast.remove(), 500);
+    }, 5000);
+}
+
+// --- FAKE PURCHASE GENERATOR ---
+const efectProducts = ["EFECT Pro Macro", "EFECT Optimizer Elite", "EFECT FPS Booster", "Custom UEFN Map"];
+setInterval(() => {
+    if (Math.random() > 0.65) {
+        const prod = efectProducts[Math.floor(Math.random() * efectProducts.length)];
+        const chars = "0123456789ABCDEF";
+        let serial = "";
+        for(let j=0; j<4; j++) serial += chars[Math.floor(Math.random() * chars.length)];
+        serial += "-XXXX-XXXX-****";
+        showToast("SECURE CHECKOUT", `User just acquired <b>${prod}</b><br><span style="color:#00ff00;font-size:0.75rem;font-family:monospace;margin-top:5px;display:block;">LICENSE: ${serial}</span>`);
+    }
+}, 12000);
+
 document.addEventListener('DOMContentLoaded', () => {
     const crt = document.createElement('div');
     crt.classList.add('crt-overlay');
@@ -197,39 +227,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- COMMAND CONSOLE LOGIC (INCLUDES 420 UNLOCK) ---
+    // --- COMMAND CONSOLE LOGIC ---
     const consoleUI = document.getElementById('command-console');
     const cmdInput = document.getElementById('cmd-input');
-    let startY = 0;
+    const consoleHandle = document.getElementById('console-handle');
+    const consoleIcon = document.getElementById('console-icon');
+    let consoleOpen = false;
 
     if (consoleUI && cmdInput) {
-        document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
-        document.addEventListener('touchend', e => {
-            if (startY < 250 && e.changedTouches[0].clientY > startY + 40) {
-                consoleUI.style.top = '0';
-                cmdInput.focus();
-            }
-        });
+        if (consoleHandle) {
+            consoleHandle.addEventListener('click', (e) => {
+                e.preventDefault();
+                triggerClick();
+                consoleOpen = !consoleOpen;
+                consoleUI.style.top = consoleOpen ? '0' : '-100px';
+                consoleIcon.className = consoleOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+                if (consoleOpen) setTimeout(() => cmdInput.focus(), 300);
+            });
+        }
 
         consoleUI.addEventListener('submit', function (e) {
             e.preventDefault(); 
             triggerClick();
-            const code = cmdInput.value.toLowerCase().replace(/\s+/g, '');
+            const code = cmdInput.value.toLowerCase().trim();
             
             if (code === 'efect.lit') {
                 const fCard = document.getElementById('secret-fps-card');
                 if (fCard) fCard.style.display = 'flex';
-                alert("FPS OVERRIDE ACTIVE.");
+                showToast("SYSTEM OVERRIDE", "Code accepted. FPS Override Active.");
             } else if (code === 'color_override') {
                 document.body.style.filter = `hue-rotate(${Math.floor(Math.random() * 360)}deg)`;
+                showToast("UI OVERRIDE", "Color matrix randomized.");
             } else if (code === 'matrix') {
                 startMatrix();
+                showToast("RENDER OVERRIDE", "Matrix background engaged.");
             } else if (code === '420') {
                 triggerBoot(); 
                 unlockHardwareMonitor();
+                showToast("ADMIN ACCESS", "Hardware telemetry unlocked.");
+            } else if (code === 'discord') {
+                const dModal = document.getElementById('discord-modal');
+                if (dModal) {
+                    dModal.style.display = 'flex';
+                    setTimeout(() => dModal.style.opacity = '1', 10);
+                }
+                showToast("LINK ESTABLISHED", "Opening comms channel.");
+            } else if (code !== '') {
+                showToast("ACCESS DENIED", "Invalid override code entered.");
             }
             
+            consoleOpen = false;
             consoleUI.style.top = '-100px';
+            consoleIcon.className = 'fa-solid fa-chevron-down';
             cmdInput.value = '';
             cmdInput.blur();
         });
@@ -275,6 +324,31 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { if (sm) sm.style.display = 'none'; }, 300);
     });
 
+    document.getElementById('close-discord-modal')?.addEventListener('click', () => {
+        triggerClick();
+        const dm = document.getElementById('discord-modal');
+        if (dm) dm.style.opacity = '0';
+        setTimeout(() => { if (dm) dm.style.display = 'none'; }, 300);
+    });
+
+    document.getElementById('copy-discord-btn')?.addEventListener('click', () => {
+        triggerClick();
+        const discordId = document.getElementById('discord-tag').innerText;
+        navigator.clipboard.writeText(discordId).then(() => {
+            showToast("COPIED TO CLIPBOARD", `${discordId} copied. Paste in Discord to DM.`);
+            const btn = document.getElementById('copy-discord-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            btn.style.background = "#5865F2";
+            btn.style.color = "#fff";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "transparent";
+                btn.style.color = "#5865F2";
+            }, 2000);
+        });
+    });
+
     document.getElementById('btn-hub')?.addEventListener('click', () => {
         triggerClick();
         window.open('https://efectmacrosxtweaks.netlify.app/', '_blank');
@@ -285,10 +359,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open('https://fortnite.gg/creator/efect.lit', '_blank');
     });
 
-    // --- SYNERGY CALCULATION LOGIC & AUTO-SAVE ---
+    // --- SYNERGY CALCULATION LOGIC ---
     document.getElementById('run-synergy-btn')?.addEventListener('click', () => {
         triggerClick();
-        
         const gpuName = document.getElementById('syn-gpu').value.toUpperCase() || "UNKNOWN GPU";
         const cpuName = document.getElementById('syn-cpu').value.toUpperCase() || "UNKNOWN CPU";
         const perName = document.getElementById('syn-per').value.toUpperCase() || "STANDARD GEAR";
@@ -315,7 +388,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (perName.includes('PRO') || perName.includes('ESPORTS')) perVal = 85;
         
         const score = Math.floor((gpuVal * 0.45) + (cpuVal * 0.40) + (perVal * 0.15));
-        
         const resultBox = document.getElementById('syn-result');
         const scoreText = document.getElementById('syn-score-text');
         const adviceText = document.getElementById('syn-advice');
@@ -323,274 +395,110 @@ document.addEventListener('DOMContentLoaded', () => {
         
         resultBox.style.display = 'block';
         scoreText.innerText = "CALC...";
-        adviceText.innerText = "Scanning exact hardware identifiers and simulating 1% low frame times...";
+        adviceText.innerText = "Scanning hardware identifiers and simulating 1% lows...";
         
         setTimeout(() => {
             triggerClick(); 
             scoreText.innerText = score;
-            
-            // Save to memory
             localStorage.setItem('efect_synergy_score', score);
             if (cardScore) cardScore.innerText = `${score}/100`;
             
-            let customFeedback = "";
-            
-            if (gpuVal < cpuVal - 15) {
-                customFeedback += `BOTTLENECK: Your ${gpuName} is holding back the ${cpuName}. Recommend lowering 3D resolution. `;
-            } else if (cpuVal < gpuVal - 15) {
-                customFeedback += `BOTTLENECK: Your ${cpuName} is choking the ${gpuName}. Lock CPU cores with EFECT Optimizer. `;
-            } else {
-                customFeedback += `PERFECT SYNERGY: The ${cpuName} and ${gpuName} are flawlessly paired. `;
-            }
-            
-            if (score >= 90) {
-                customFeedback += `\n\nSTATUS: Elite Tier. You have raw 0-delay hardware. Inject EFECT Macros for absolute minimum input lag.`;
-            } else if (score >= 70) {
-                customFeedback += `\n\nSTATUS: Competitive Tier. Solid frame times. Ensure your peripheral polling rates are maxed to match the system.`;
-            } else {
-                customFeedback += `\n\nSTATUS: Casual Tier. Heavy optimizations required. Drop all Fortnite settings to Performance Mode.`;
-            }
-            
+            let customFeedback = (gpuVal < cpuVal - 15) ? `BOTTLENECK: ${gpuName} is holding back ${cpuName}. ` : (cpuVal < gpuVal - 15) ? `BOTTLENECK: ${cpuName} is choking ${gpuName}. ` : `PERFECT SYNERGY: Flawlessly paired hardware. `;
+            customFeedback += (score >= 90) ? `\n\nSTATUS: Elite Tier. Raw 0-delay hardware.` : (score >= 70) ? `\n\nSTATUS: Competitive Tier. Solid frame times.` : `\n\nSTATUS: Casual Tier. drop settings to Performance Mode.`;
             adviceText.innerText = customFeedback;
         }, 1500);
     });
 
-    // --- HARDWARE MONITOR JAILBREAK & TELEMETRY ENGINE ---
+    // --- HARDWARE MONITOR JAILBREAK ---
     function unlockHardwareMonitor() {
         const hwCard = document.getElementById('hw-monitor-card');
         const hwBtn = document.getElementById('btn-hw-monitor');
         const hwBadge = document.getElementById('hw-status-badge');
-        
         if (hwCard && hwBtn && hwBadge) {
             hwCard.classList.remove('locked');
             hwBadge.className = 'status online';
             hwBadge.innerHTML = '<span class="dot"></span> ONLINE';
-            hwBadge.style.color = '#00ff00';
-            hwBadge.style.borderColor = '#00ff00';
-            hwBadge.style.background = 'rgba(0,255,0,0.1)';
-            
             hwBtn.classList.remove('disabled');
             hwBtn.removeAttribute('disabled');
             hwBtn.innerText = 'OPEN TELEMETRY';
-            
             localStorage.setItem('efect_monitor_unlocked', 'true');
         }
     }
+    if (localStorage.getItem('efect_monitor_unlocked') === 'true') unlockHardwareMonitor();
 
-    if (localStorage.getItem('efect_monitor_unlocked') === 'true') {
-        unlockHardwareMonitor();
-    }
-
-    document.getElementById('btn-hw-monitor')?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (document.getElementById('btn-hw-monitor').classList.contains('disabled')) return;
-        
-        triggerClick();
-        const modal = document.getElementById('telemetry-modal');
-        if (modal) {
-            modal.style.display = 'flex';
-            setTimeout(() => modal.style.opacity = '1', 10);
-        }
-    });
-
-    document.getElementById('close-telemetry-modal')?.addEventListener('click', () => {
-        triggerClick();
-        const tm = document.getElementById('telemetry-modal');
-        if (tm) tm.style.opacity = '0';
-        setTimeout(() => { if (tm) tm.style.display = 'none'; }, 300);
-    });
-
-    document.getElementById('btn-force-cool')?.addEventListener('click', () => {
-        triggerBoot(); 
-        document.getElementById('tel-cpu-temp').innerText = '32°C';
-        document.getElementById('tel-gpu-temp').innerText = '28°C';
-        document.getElementById('tel-cpu-temp').style.color = '#00ffff'; 
-        document.getElementById('tel-gpu-temp').style.color = '#00ffff'; 
-        setTimeout(() => {
-            document.getElementById('tel-cpu-temp').style.color = '#00ff00';
-            document.getElementById('tel-gpu-temp').style.color = '#00ff00';
-        }, 2000);
-    });
-
-    setInterval(() => {
-        const tm = document.getElementById('telemetry-modal');
-        if (tm && tm.style.opacity === '1') {
-            
-            document.getElementById('tel-cpu-temp').innerText = Math.floor(Math.random() * (65 - 40) + 40) + '°C';
-            document.getElementById('tel-cpu-load').innerText = Math.floor(Math.random() * (45 - 10) + 10) + '%';
-            document.getElementById('tel-gpu-temp').innerText = Math.floor(Math.random() * (55 - 35) + 35) + '°C';
-            document.getElementById('tel-gpu-load').innerText = Math.floor(Math.random() * (35 - 5) + 5) + '%';
-            
-            const graph = document.getElementById('ping-graph');
-            if (graph) {
-                const bar = document.createElement('div');
-                const ping = Math.floor(Math.random() * (25 - 0) + 5); 
-                
-                bar.style.width = '8px';
-                bar.style.flexShrink = '0';
-                bar.style.backgroundColor = ping > 20 ? '#ff3333' : '#00ff00'; 
-                bar.style.height = (ping * 3) + '%'; 
-                bar.style.transition = 'height 0.2s ease';
-                
-                graph.appendChild(bar);
-                
-                if (graph.children.length > 50) {
-                    graph.removeChild(graph.firstChild);
-                }
-            }
-        }
-    }, 600); 
+    initDiagnostics();
 });
 
-// --- GITHUB API LIVE FETCH (CACHED & SAFE) ---
+// --- GITHUB & MATRIX ---
 async function fetchGitHubUpdates() {
     const ghUpdateElement = document.getElementById('gh-update');
     if (!ghUpdateElement) return;
-
-    const cachedData = localStorage.getItem('efect_gh_update');
-    const cacheTime = localStorage.getItem('efect_gh_time');
-    
-    if (cachedData && cacheTime && (Date.now() - cacheTime < 300000)) {
-        ghUpdateElement.innerHTML = cachedData;
-        return;
-    }
-
     try {
         const response = await fetch('https://api.github.com/users/tjcorp420/events/public');
-        if (response.status === 403) {
-            if (cachedData) ghUpdateElement.innerHTML = cachedData; 
-            else ghUpdateElement.innerHTML = `<i class="fa-solid fa-shield-halved"></i> GITHUB API RATE LIMIT: STANDING BY...`;
-            return;
-        }
-
         const events = await response.json();
-        const lastPush = events.find(event => event.type === 'PushEvent' && event.payload && event.payload.commits && event.payload.commits.length > 0);
-        
+        const lastPush = events.find(event => event.type === 'PushEvent');
         if (lastPush) {
-            let repoName = lastPush.repo.name.split('/')[1].replace(/-/g, ' '); 
-            const commitDate = new Date(lastPush.created_at).toLocaleDateString();
-            const commitMessage = lastPush.payload.commits[0].message;
-            const finalHTML = `<i class="fa-solid fa-code-commit"></i> LATEST UPDATE [${repoName}] (${commitDate}): ${commitMessage}`;
-            ghUpdateElement.innerHTML = finalHTML;
-            localStorage.setItem('efect_gh_update', finalHTML);
-            localStorage.setItem('efect_gh_time', Date.now());
-        } else {
-            ghUpdateElement.innerHTML = `<i class="fa-solid fa-satellite-dish"></i> SCANNING FOR NEW EFECT UPDATES...`;
+            ghUpdateElement.innerHTML = `<i class="fa-solid fa-code-commit"></i> UPDATE [${lastPush.repo.name.split('/')[1]}]: ${lastPush.payload.commits[0].message}`;
         }
-    } catch (error) {
-        ghUpdateElement.innerHTML = `<i class="fa-solid fa-satellite-dish"></i> GITHUB LINK SECURED`;
-    }
+    } catch (e) {}
 }
 
-// --- REAL HARDWARE DIAGNOSTICS ---
-function initDiagnostics() {
-    const battSpan = document.getElementById('batt-level');
-    if (battSpan) {
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(battery => {
-                const updateBatt = () => { battSpan.innerText = `${Math.round(battery.level * 100)}% ${battery.charging ? '⚡' : ''}`; };
-                updateBatt();
-                battery.addEventListener('levelchange', updateBatt);
-                battery.addEventListener('chargingchange', updateBatt);
-            }).catch(() => { battSpan.innerText = "SECURED"; });
-        } else { battSpan.innerText = "HIDDEN"; }
-    }
-
-    const netSpan = document.getElementById('net-status');
-    if (netSpan) {
-        const updateNet = () => {
-            if (navigator.connection && navigator.connection.effectiveType) {
-                netSpan.innerText = navigator.connection.effectiveType.toUpperCase();
-            } else {
-                netSpan.innerText = navigator.onLine ? 'ONLINE' : 'OFFLINE';
-            }
-        };
-        updateNet();
-        window.addEventListener('online', updateNet);
-        window.addEventListener('offline', updateNet);
-    }
-}
-
-// --- MATRIX EFFECT ---
 function startMatrix() {
     const canvas = document.getElementById('matrix-canvas') || document.createElement('canvas');
     canvas.id = 'matrix-canvas';
     document.body.appendChild(canvas);
     canvas.style.display = 'block';
     const ctx = canvas.getContext('2d');
-    
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function draw() {
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+    setInterval(() => {
         ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#00ff00";
-        ctx.font = fontSize + "px arial";
-
-        for (let i = 0; i < drops.length; i++) {
-            const text = characters.charAt(Math.floor(Math.random() * characters.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops.forEach((y, i) => {
+            ctx.fillText(chars.charAt(Math.floor(Math.random() * chars.length)), i * 16, y * 16);
+            if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
-        }
-    }
-    setInterval(draw, 33);
+        });
+    }, 33);
 }
 
-// --- CORE UTILS ---
+function initDiagnostics() {
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(b => {
+            const up = () => document.getElementById('batt-level').innerText = `${Math.round(b.level * 100)}% ${b.charging ? '⚡' : ''}`;
+            up(); b.onlevelchange = up; b.onchargingchange = up;
+        });
+    }
+}
+
 function handleGyro(e) {
     const galaxy = document.querySelector('.galaxy-wrapper');
     if (galaxy) galaxy.style.transform = `translate(${e.gamma/1.5}px, ${(e.beta-45)/1.5}px)`;
 }
 
 function typeWriter() {
-    if (i < text.length) {
-        const tw = document.getElementById("typewriter");
-        if (tw) tw.innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
-    } else { startTerminalLog(); }
+    const tw = document.getElementById("typewriter");
+    if (i < text.length) { tw.innerHTML += text.charAt(i); i++; setTimeout(typeWriter, speed); }
+    else { startTerminalLog(); }
 }
 
 function startTerminalLog() {
     const log = document.getElementById("terminal-log");
-    if (log) {
-        setInterval(() => {
-            log.innerText = "> " + systemLogs[logIndex];
-            logIndex = (logIndex + 1) % systemLogs.length;
-        }, 2000);
-    }
+    setInterval(() => {
+        log.innerText = "> " + systemLogs[logIndex];
+        logIndex = (logIndex + 1) % systemLogs.length;
+    }, 2000);
 }
 
-// --- LIQUID RIPPLES AND PARTICLES ---
 document.addEventListener('click', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
-
+    if (['INPUT', 'SELECT', 'OPTION'].includes(e.target.tagName)) return;
     const ripple = document.createElement('div');
     ripple.classList.add('ripple');
     ripple.style.left = e.pageX + 'px';
     ripple.style.top = e.pageY + 'px';
     document.body.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600); 
-
-    if (e.target.tagName === 'BUTTON') return;
-    
-    for (let j = 0; j < 8; j++) {
-        const p = document.createElement('div');
-        p.classList.add('particle');
-        document.body.appendChild(p);
-        const angle = Math.random() * Math.PI * 2;
-        const vel = 30 + Math.random() * 50;
-        p.style.left = e.pageX + 'px';
-        p.style.top = e.pageY + 'px';
-        p.style.setProperty('--tx', Math.cos(angle) * vel + 'px');
-        p.style.setProperty('--ty', Math.sin(angle) * vel + 'px');
-        setTimeout(() => p.remove(), 600);
-    }
 });

@@ -12,15 +12,20 @@
     <link rel="apple-touch-icon" href="icon.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=21">
+    <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
+    <div id="toast-container"></div>
+
     <div id="share-btn" class="icon-wrapper">
         <i class="fa-solid fa-arrow-up-from-bracket"></i>
     </div>
 
     <form id="command-console">
         <input type="text" id="cmd-input" placeholder="Enter override code..." autocomplete="off">
+        <div id="console-handle">
+            <i class="fa-solid fa-chevron-down" id="console-icon"></i>
+        </div>
     </form>
 
     <div id="splash-screen">
@@ -35,7 +40,7 @@
         <div id="boot-hud" class="boot-hud" style="display: none;">
             <div class="hud-side">
                 <span style="color:#fff; border-bottom:1px solid #00ff00; margin-bottom:5px;">MEM_DUMP</span>
-                "<div id="hud-hex" style="opacity: 0.7;">0x0000</div>
+                <div id="hud-hex" style="opacity: 0.7;">0x0000</div>
                 <div id="hud-hex2" style="opacity: 0.5;">0x0000</div>
             </div>
             
@@ -80,7 +85,7 @@
                 <source src="preview.mp4" type="video/mp4">
             </video>
             <a href="https://payhip.com/b/0TOjr" target="_blank" class="neon-btn buy-btn">Get Efect Pro Macro</a>
-            <img src="macro-ui.png" alt="Macro Hub UI" class="modal-img">
+            <img src="macro.png" alt="Macro Hub UI" class="modal-img">
         </div>
     </div>
 
@@ -88,7 +93,7 @@
         <div class="modal-content glass-card" style="border-color: #fff; box-shadow: 0 0 40px rgba(255,255,255,0.2);">
             <span class="close-btn" id="close-fps-modal" style="color: #fff;">&times;</span>
             <h2 style="color: #fff; margin-top: 0; text-shadow: 0 0 10px #fff;">FPS Booster UI</h2>
-            <img src="fps-ui.png" alt="FPS Hub UI" class="modal-img" style="border-color: #fff;">
+            <img src="fps.png" alt="FPS Hub UI" class="modal-img" style="border-color: #fff;">
             <a href="https://payhip.com/b/EQIrd" target="_blank" class="neon-btn buy-btn" style="background: #fff; color: #000; box-shadow: 0 0 20px #fff; border: none;">Get Efect FPS Booster</a>
         </div>
     </div>
@@ -151,7 +156,7 @@
                 </datalist>
             </div>
 
-            <div id="syn-result" style="display: none; margin-bottom: 15px; padding: 15px; border: 1px dashed #00ff00; background: rgba(0,255,0,0.1);">
+            <div id="syn-result" style="display: none; margin-bottom: 15px; padding: 15px; border: 1px dashed #00ff00; background: rgba(0,255,0,0.1); border-radius: 6px;">
                 <h3 style="margin: 0; color: #fff;">SYNERGY SCORE: <span id="syn-score-text" style="color: #00ff00; text-shadow: 0 0 10px #00ff00;">--</span>/100</h3>
                 <p id="syn-advice" style="color: #aaa; font-size: 0.8rem; margin: 10px 0 0 0; line-height: 1.4;"></p>
             </div>
@@ -160,7 +165,20 @@
         </div>
     </div>
 
-
+    <div id="discord-modal" class="modal-overlay">
+        <div class="modal-content glass-card" style="border-color: #5865F2; box-shadow: 0 0 40px rgba(88, 101, 242, 0.3);">
+            <span class="close-btn" id="close-discord-modal" style="color: #5865F2;">&times;</span>
+            <i class="fa-brands fa-discord" style="font-size: 3rem; color: #5865F2; margin-bottom: 1rem; text-shadow: 0 0 15px rgba(88, 101, 242, 0.5);"></i>
+            <h2 style="color: #5865F2; text-shadow: 0 0 10px rgba(88, 101, 242, 0.5); margin-top: 0; letter-spacing: 1px;">BUSINESS & INQUIRIES</h2>
+            <p style="color: #ccc; font-size: 0.9rem;">DM for custom tweaks, map designs, or EFECT Suite inquiries.</p>
+            
+            <div style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px dashed #5865F2; margin: 20px 0;">
+                <span id="discord-tag" style="color: #fff; font-weight: bold; font-size: 1.5rem; letter-spacing: 2px;">ur_not_himfr</span>
+            </div>
+            
+            <button id="copy-discord-btn" class="neon-btn pulse-fast" style="border-color: #5865F2; color: #5865F2; box-shadow: none;">COPY DISCORD ID</button>
+        </div>
+    </div>
 
     <div class="galaxy-wrapper">
         <div class="galaxy-bg"></div>
@@ -183,7 +201,7 @@
         </div>
         
         <div class="card-container">
-            <div class="glass-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+            <div class="glass-card" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                 <div class="card-header">
                     <div class="icon-wrapper"><i class="fa-solid fa-microchip"></i></div>
                     <span class="status online"><span class="dot"></span> ONLINE</span>
@@ -194,18 +212,18 @@
                 <button id="btn-preview" class="neon-btn secondary-btn">Watch Preview</button>
             </div>
 
-            <div id="secret-fps-card" class="glass-card" style="display: none;" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+            <div id="secret-fps-card" class="glass-card" style="display: none; border-color: #fff; background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.4) 100%);" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                 <div class="card-header">
-                    <div class="icon-wrapper"><i class="fa-solid fa-gauge-high"></i></div>
-                    <span class="status online" style="color: #fff; background: rgba(255,255,255,0.2); border-color: #fff;"><span class="dot" style="background:#fff; box-shadow: 0 0 5px #fff;"></span> OVERCLOCKED</span>
+                    <div class="icon-wrapper" style="color: #fff; text-shadow: 0 0 10px #fff;"><i class="fa-solid fa-gauge-high"></i></div>
+                    <span class="status online" style="color: #000; background: #fff; border-color: #fff; font-weight: bold;"><span class="dot" style="background:#000; box-shadow: none;"></span> OVERCLOCKED</span>
                 </div>
-                <h2 style="color: #fff; text-shadow: 0 0 10px #fff;">Efect FPS Booster</h2>
+                <h2 style="color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);">Efect FPS Booster</h2>
                 <p style="color: #ccc;">Maximum frame rate unlocked. Background processes terminated. Ready for launch.</p>
-                <button onclick="window.open('https://payhip.com/b/EQIrd', '_blank')" class="neon-btn" style="color: #000; background: #fff; box-shadow: 0 0 20px #fff; border-color: #fff;">Engage</button>
-                <button id="btn-fps-preview" class="neon-btn secondary-btn" style="border-color: #fff; color: #fff;">View UI</button>
+                <button onclick="window.open('https://payhip.com/b/EQIrd', '_blank')" class="neon-btn" style="color: #000; background: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.6); border-color: #fff;">Engage</button>
+                <button id="btn-fps-preview" class="neon-btn secondary-btn" style="border-color: rgba(255,255,255,0.4); color: #fff;">View UI</button>
             </div>
 
-            <div class="glass-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+            <div class="glass-card" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                 <div class="card-header">
                     <div class="icon-wrapper"><i class="fa-solid fa-gamepad"></i></div>
                     <span class="status online"><span class="dot"></span> ONLINE</span>
@@ -215,18 +233,18 @@
                 <button id="btn-maps" class="neon-btn">View Maps</button>
             </div>
 
-            <div class="glass-card" data-tilt data-tilt-glare data-tilt-max-glare="0.2">
+            <div class="glass-card" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                 <div class="card-header">
                     <div class="icon-wrapper"><i class="fa-solid fa-calculator"></i></div>
                     <span class="status online" style="color: #00ff00; border-color: #00ff00; background: rgba(0,255,0,0.1);"><span class="dot"></span> LIVE TOOL</span>
                 </div>
                 <h2>Synergy Calculator</h2>
                 <p>Analyze your hardware & settings to find your true latency potential.</p>
-                <p style="color: #00ff00; font-family: monospace; font-weight: bold; font-size: 0.9rem;">SCORE: <span id="card-synergy-score">--</span></p>
-                <button id="btn-synergy" class="neon-btn" style="background: #00ff00; color: #000; text-shadow: none;">LAUNCH ANALYZER</button>
+                <p style="color: #00ff00; font-family: monospace; font-weight: bold; font-size: 1rem; text-shadow: 0 0 5px rgba(0,255,0,0.3);">SCORE: <span id="card-synergy-score">--</span></p>
+                <button id="btn-synergy" class="neon-btn" style="background: rgba(0,255,0,0.1); color: #00ff00;">LAUNCH ANALYZER</button>
             </div>
 
-                        <div id="hw-monitor-card" class="glass-card locked" data-tilt>
+            <div id="hw-monitor-card" class="glass-card locked" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                 <div class="card-header">
                     <div class="icon-wrapper"><i class="fa-solid fa-server"></i></div>
                     <span class="status dev" id="hw-status-badge"><span class="dot"></span> LOCKED</span>
